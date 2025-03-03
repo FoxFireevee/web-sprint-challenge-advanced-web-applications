@@ -6,13 +6,26 @@ const initialFormValues = { title: '', text: '', topic: '' }
 export default function ArticleForm(props) {
   const [values, setValues] = useState(initialFormValues)
   // ✨ where are my props? Destructure them here
-
+  const { postArticle, updateArticle, currentArticle, setCurrentArticleId } = props
   useEffect(() => {
     // ✨ implement
     // Every time the `currentArticle` prop changes, we should check it for truthiness:
     // if it's truthy, we should set its title, text and topic into the corresponding
     // values of the form. If it's not, we should reset the form back to initial values.
-  })
+    if (currentArticle) {
+      // console.log('Articles - Testing UseEffect', articles)
+      console.log("Values - Testing UseEffect", values)
+      setValues({
+        title: currentArticle.title,
+        text: currentArticle.text,
+        topic: currentArticle.topic,
+      })
+    }
+    else {
+      setValues(initialFormValues)
+    }
+    console.log("Values", values)
+  }, [currentArticle])
 
   const onChange = evt => {
     const { id, value } = evt.target
@@ -24,18 +37,48 @@ export default function ArticleForm(props) {
     // ✨ implement
     // We must submit a new post or update an existing one,
     // depending on the truthyness of the `currentArticle` prop.
+    const currentArticleData = {
+      title: values.title,
+      text: values.text,
+      topic: values.topic,
+    }
+    
+    currentArticle ? 
+      updateArticle({currentArticleData, article_id: currentArticle.article_id}) 
+      : 
+      postArticle(currentArticle)
+
+    setCurrentArticleId()
+    setValues(initialFormValues)
+
+
+    // Old logic that got transformed into the above ternary expression ^^^
+    // if(currentArticle) {
+    //   // setValues(currentArticleData)
+    //   updateArticle({currentArticleData, article_id: currentArticle.article_id})
+    // } else {
+    //   postArticle(currentArticleData)
+    //   setCurrentArticleId()
+    // }
+    // // postArticle({text: values.text, title: values.title, topic: values.topic})
+    // console.log('Finalized Values', values)
+    // setValues(initialFormValues)
   }
 
   const isDisabled = () => {
     // ✨ implement
-    // Make sure the inputs have some values
+    // Make sure the inputs have some 
+    if(values.text.length <= 0 || values.title.length <= 0 || values.topic.length <= 0) {
+      return true
+    }
+    return false
   }
 
   return (
     // ✨ fix the JSX: make the heading display either "Edit" or "Create"
     // and replace Function.prototype with the correct function
     <form id="form" onSubmit={onSubmit}>
-      <h2>Create Article</h2>
+      <h2>{currentArticle ? 'Edit Article' : 'Create Article'}</h2>
       <input
         maxLength={50}
         onChange={onChange}

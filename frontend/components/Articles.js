@@ -1,16 +1,28 @@
-import React, { useEffect } from 'react'
-import { Navigate } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import PT from 'prop-types'
 
 export default function Articles(props) {
   // ✨ where are my props? Destructure them here
+  const { getArticles, deleteArticle, articles, currentArticleId, setCurrentArticleId } = props
 
+  // console.log("What am I?", articles)
+  
+  // const [redirect, setRedirect] = useState(false)
   // ✨ implement conditional logic: if no token exists
   // we should render a Navigate to login screen (React Router v.6)
 
+  const navigate = useNavigate()
+
+  const token = localStorage.getItem('token')
+  if(!token) {
+    navigate('/')
+  }
+
   useEffect(() => {
     // ✨ grab the articles here, on first render only
-  })
+     getArticles()
+  }, [])
 
   return (
     // ✨ fix the JSX: replace `Function.prototype` with actual functions
@@ -18,9 +30,10 @@ export default function Articles(props) {
     <div className="articles">
       <h2>Articles</h2>
       {
-        ![].length
+        !articles?.length
           ? 'No articles yet'
-          : [].map(art => {
+          : articles.map(art => {
+            // console.log("I am the articles being mapped over in Articles.js", art)
             return (
               <div className="article" key={art.article_id}>
                 <div>
@@ -29,8 +42,8 @@ export default function Articles(props) {
                   <p>Topic: {art.topic}</p>
                 </div>
                 <div>
-                  <button disabled={true} onClick={Function.prototype}>Edit</button>
-                  <button disabled={true} onClick={Function.prototype}>Delete</button>
+                  <button disabled={!!currentArticleId} onClick={() => setCurrentArticleId(art.article_id)}>Edit</button>
+                  <button disabled={!!currentArticleId} onClick={() => deleteArticle()}>Delete</button>
                 </div>
               </div>
             )
