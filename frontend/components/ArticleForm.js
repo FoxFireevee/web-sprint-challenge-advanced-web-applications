@@ -46,10 +46,12 @@ export default function ArticleForm(props) {
     currentArticle ? 
       updateArticle({currentArticleData, article_id: currentArticle.article_id}) 
       : 
-      postArticle(currentArticle)
+      postArticle(currentArticleData)
 
     setCurrentArticleId()
     setValues(initialFormValues)
+
+    console.log("Current Article", currentArticle)
 
 
     // Old logic that got transformed into the above ternary expression ^^^
@@ -58,7 +60,7 @@ export default function ArticleForm(props) {
     //   updateArticle({currentArticleData, article_id: currentArticle.article_id})
     // } else {
     //   postArticle(currentArticleData)
-    //   setCurrentArticleId()
+    //   setCurrentArticleId(null)
     // }
     // // postArticle({text: values.text, title: values.title, topic: values.topic})
     // console.log('Finalized Values', values)

@@ -16,6 +16,7 @@ export default function App() {
   const [articles, setArticles] = useState([])
   const [currentArticleId, setCurrentArticleId] = useState()
   const [spinnerOn, setSpinnerOn] = useState(false)
+  const [tokenState, setTokenState] = useState('')
 
   // ✨ Research `useNavigate` in React Router v.6
   const navigate = useNavigate()
@@ -47,13 +48,15 @@ export default function App() {
       password
     })
       .then(res => {
-        console.log('Logins Recieved username and password', username, password)
+        // console.log('Logins Recieved username and password', username, password)
         localStorage.setItem('token', res.data.token)
+        console.log("Data Check", res.data)
+        setTokenState(res.data.token)
         setMessage(res.data.message)
         redirectToArticles()
-        getArticles()
+        // getArticles()
         setSpinnerOn(false)
-        console.log('Login Message', res.data.message)
+        // console.log('Login Message', res.data.message)
       })
       .catch(err => { console.error('Error:', err) })
   }
@@ -68,13 +71,14 @@ export default function App() {
     // if it's a 401 the token might have gone bad, and we should redirect to login.
     // Don't forget to turn off the spinner!
     const token = localStorage.getItem('token')
+    console.log("Token Tester", token)
     setMessage('')
     setSpinnerOn(true)
-    axios.get(articlesUrl, { headers: { Authorization: localStorage.getItem('token') } })
+    axios.get(articlesUrl, { headers: { Authorization: tokenState } })
       .then(res => {
-        console.log("Result", res.data.articles)
-        console.log("Article Message", message)
-        console.log("Article Spinner", spinnerOn)
+        // console.log("Result", res.data.articles)
+        // console.log("Article Message", message)
+        // console.log("Article Spinner", spinnerOn)
         setArticles(res.data.articles)
         setMessage(res.data.message)
         setSpinnerOn(false)
@@ -98,15 +102,12 @@ export default function App() {
     setSpinnerOn(true)
     axios.post(articlesUrl, article, { headers: { Authorization: token } })
       .then(res => {
-        console.log("Posts Success Message", res.data.message)
-        axios.get(articlesUrl, { headers: { Authorization: localStorage.getItem('token') } })
-          .then(res => {
-            setArticles(articles => { return articles.concat(res.data.article) })
-          })
+        // console.log("Posts Success Message", res.data.message)
+        setArticles(articles => { return articles.concat(res.data.article) })// setArticles([...articles, res.data.article])
         setMessage(res.data.message)
         const foundArticleId = articles.find(art => art.article_id == currentArticleId)
-        console.log("Did we find it?!", foundArticleId)
-        console.log("Checking Articles", articles)
+        // console.log("Did we find it?!", foundArticleId)
+        // console.log("Checking Articles", articles)
         setSpinnerOn(false)
       })
       .catch(err => {
@@ -118,7 +119,7 @@ export default function App() {
   }
 
   const updateArticle = ({ article_id, article }) => {
-    console.log("Update Current Article Id", article_id)
+    // console.log("Update Current Article Id", article_id)
     // setCurrentArticleId(article_id)
     // ✨ implement
     // You got this!
@@ -128,7 +129,7 @@ export default function App() {
     setSpinnerOn(true)
     axios.put(putArticleURL, article, { headers: { Authorization: token } })
       .then(res => {
-        console.log("Updating Article Succeeded!", res)
+        // console.log("Updating Article Succeeded!", res)
         setMessage(res.message)
         setArticles(articles => {
           articles.map((art) => {
@@ -137,7 +138,7 @@ export default function App() {
         })
       })
       .catch(err => {
-        console.error('Updating the Article went wrong', err)
+        // console.error('Updating the Article went wrong', err)
         setMessage(err.response.data.message)
         if (err.response.status == 401) {
           redirectToLogin()
@@ -152,7 +153,7 @@ export default function App() {
     // ✨ implement
   }
 
-
+  // console.log("Checking in on Articles", articles)
 
   return (
     // ✨ fix the JSX: `Spinner`, `Message`, `LoginForm`, `ArticleForm` and `Articles` expect props ❗

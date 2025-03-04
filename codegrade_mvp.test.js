@@ -75,8 +75,12 @@ describe('Advanced Applications', () => {
         - article titles, texts, topics render on the page
         - success message renders on the page`, async () => {
       // login flow
+      console.log("Do I exist?!")
       fireEvent.change(usernameInput(), { target: { value: 'Foo' } })
       fireEvent.change(passwordInput(), { target: { value: '12345678' } })
+      console.log("Jordan's test", passwordInput().value)
+      console.log("Jordan's test", usernameInput().value)
+      console.log("Login Test", loginBtn)
       fireEvent.click(loginBtn())
       // titles not there yet
       expect(screen.queryByText(st.closuresTitle, queryOptions)).not.toBeInTheDocument()
