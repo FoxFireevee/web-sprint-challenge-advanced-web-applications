@@ -74,7 +74,7 @@ export default function App() {
     console.log("Token Tester", token)
     setMessage('')
     setSpinnerOn(true)
-    axios.get(articlesUrl, { headers: { Authorization: tokenState } })
+    axios.get(articlesUrl, { headers: { Authorization: token } })
       .then(res => {
         // console.log("Result", res.data.articles)
         // console.log("Article Message", message)
@@ -121,6 +121,7 @@ export default function App() {
   const updateArticle = ({ article_id, article }) => {
     setCurrentArticleId(article_id)
     console.log("Updated Current Article Id", article_id)
+    console.log("Recieved Updated Article Info", article)
     // ✨ implement
     // You got this!
     const putArticleURL = `http://localhost:9000/api/articles/${article_id}`
@@ -133,14 +134,14 @@ export default function App() {
         setMessage(res.message)
         setArticles(articles => {
           articles.map((art) => {
-            art.article_id === article_id ? res.data.article : art
-            console.log("Am I the Problem?", res.data.article)
+            return art.article_id === article_id ? res.data.article : art
+            // console.log("Am I the Problem?", res.data.article)
           })
         })
       })
       .catch(err => {
-        console.error('Updating the Article went wrong', err)
-        setMessage(err.response.data.message)
+        console.error('Updating the Article went wrong', err.message)
+        setMessage(err.response.message)
         if (err.response.status == 401) {
           redirectToLogin()
         }

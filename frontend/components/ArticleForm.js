@@ -44,7 +44,7 @@ export default function ArticleForm(props) {
     }
     console.log("Submitted Article Data", currentArticleData)
     currentArticle ? 
-      updateArticle({currentArticleData, article_id: currentArticle.article_id}) 
+      updateArticle({article_id: currentArticle.article_id, article: currentArticleData}) 
       : 
       postArticle(currentArticleData)
 
