@@ -48,7 +48,7 @@ export default function App() {
       password
     })
       .then(res => {
-        // console.log('Logins Recieved username and password', username, password)
+        console.log('Logins Recieved username and password', username, password)
         localStorage.setItem('token', res.data.token)
         console.log("Data Check", res.data)
         setTokenState(res.data.token)
@@ -119,8 +119,8 @@ export default function App() {
   }
 
   const updateArticle = ({ article_id, article }) => {
-    // console.log("Update Current Article Id", article_id)
-    // setCurrentArticleId(article_id)
+    setCurrentArticleId(article_id)
+    console.log("Updated Current Article Id", article_id)
     // ✨ implement
     // You got this!
     const putArticleURL = `http://localhost:9000/api/articles/${article_id}`
@@ -129,16 +129,17 @@ export default function App() {
     setSpinnerOn(true)
     axios.put(putArticleURL, article, { headers: { Authorization: token } })
       .then(res => {
-        // console.log("Updating Article Succeeded!", res)
+        console.log("Updating Article Succeeded!", res)
         setMessage(res.message)
         setArticles(articles => {
           articles.map((art) => {
             art.article_id === article_id ? res.data.article : art
+            console.log("Am I the Problem?", res.data.article)
           })
         })
       })
       .catch(err => {
-        // console.error('Updating the Article went wrong', err)
+        console.error('Updating the Article went wrong', err)
         setMessage(err.response.data.message)
         if (err.response.status == 401) {
           redirectToLogin()

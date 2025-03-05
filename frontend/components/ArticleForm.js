@@ -20,11 +20,11 @@ export default function ArticleForm(props) {
         text: currentArticle.text,
         topic: currentArticle.topic,
       })
+      console.log("Values", values)
     }
     else {
       setValues(initialFormValues)
     }
-    console.log("Values", values)
   }, [currentArticle])
 
   const onChange = evt => {
@@ -42,7 +42,7 @@ export default function ArticleForm(props) {
       text: values.text,
       topic: values.topic,
     }
-    
+    console.log("Submitted Article Data", currentArticleData)
     currentArticle ? 
       updateArticle({currentArticleData, article_id: currentArticle.article_id}) 
       : 
