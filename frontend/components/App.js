@@ -124,24 +124,24 @@ export default function App() {
     console.log("Recieved Updated Article Info", article)
     // ✨ implement
     // You got this!
-    const putArticleURL = `http://localhost:9000/api/articles/${article_id}`
+    const putArticleURL = `http://localhost:9000/api/articles/${currentArticleId}`
     const token = localStorage.getItem('token')
     setMessage('')
     setSpinnerOn(true)
     axios.put(putArticleURL, article, { headers: { Authorization: token } })
       .then(res => {
         console.log("Updating Article Succeeded!", res)
-        setMessage(res.message)
+        setMessage(res.data.message)
         setArticles(articles => {
-          articles.map((art) => {
+          return articles.map((art) => {
             return art.article_id === article_id ? res.data.article : art
             // console.log("Am I the Problem?", res.data.article)
           })
         })
       })
       .catch(err => {
-        console.error('Updating the Article went wrong', err.message)
-        setMessage(err.response.message)
+        console.error('Updating the Article went wrong', err)
+        // setMessage(err.response)
         if (err.response.status == 401) {
           redirectToLogin()
         }
@@ -153,6 +153,28 @@ export default function App() {
 
   const deleteArticle = article_id => {
     // ✨ implement
+    // setCurrentArticleId(article_id)
+    console.log(currentArticleId)
+    const deleteArticleURL = `http://localhost:9000/api/articles/${article_id}`
+    const token = localStorage.getItem('token')
+    setMessage('')
+    setSpinnerOn(true)
+    axios.delete(deleteArticleURL, { headers: { Authorization: token } })
+      .then(res => {
+        console.log("delete's res", res)
+        setMessage(res.data.message)
+        setArticles(articles => {
+          return articles.filter(article => {
+            return article.article_id !== article_id
+          })
+        })
+      })
+    .catch(err => {
+      console.error('Deleting the Article went wrong', err)
+    }) 
+    .finally(() => {
+      setSpinnerOn(false)
+    })
   }
 
   // console.log("Checking in on Articles", articles)
